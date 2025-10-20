@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Memory Chat</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; background-color: #f6f6f6; }
+    h2 { color: #333; }
+    textarea, input[type="text"] {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 1rem 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 0.7rem 1.2rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    pre {
+      background-color: #eee;
+      padding: 1rem;
+      white-space: pre-wrap;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🧠 AI Memory Chat Interface</h2>
+
+  <label for="userId">User ID:</label>
+  <input type="text" id="userId" placeholder="e.g., u1" value="u1">
+
+  <label for="sessionId">Session ID (optional):</label>
+  <input type="text" id="sessionId" placeholder="e.g., s1">
+
+  <label for="message">Message:</label>
+  <textarea id="message" rows="5" placeholder="Type your message..."></textarea>
+
+  <button onclick="sendMessage()">Send</button>
+
+  <h3>💬 AI Response:</h3>
+  <pre id="responseBox">Response will appear here...</pre>
+
+ <script>
+    document.getElementById("chatForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const userId = document.getElementById("userId").value;
+        const sessionId = document.getElementById("sessionId").value;
+        const message = document.getElementById("message").value;
+
+        const payload = {
+            user_id: userId,
+            session_id: sessionId,
+            message: message
+        };
+
+        try {
+            const response = await fetch("/api/chat/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const contentType = response.headers.get("Content-Type");
+
+            if (!response.ok) {
+                throw new Error(await response.text());
+            }
+
+            let resultText;
+
+            if (contentType && contentType.includes("application/json")) {
+                const result = await response.json();
+                resultText = result.response;
+            } else {
+                resultText = await response.text();
+            }
+
+            document.getElementById("response").textContent = resultText;
+        } catch (error) {
+            document.getElementById("response").textContent = `❌ Error: ${error.message}`;
+        }
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore VSCode settings
+.vscode/
+
+# Ignore environment
+.env
+.venv/
+
+# Ignore node_modules
+node_modules/
+
+# Ignore static file caches or log files
+*.log
+.DS_Store
+
+# Ignore database dumps or sensitive files
+*.sqlite
+*.db
